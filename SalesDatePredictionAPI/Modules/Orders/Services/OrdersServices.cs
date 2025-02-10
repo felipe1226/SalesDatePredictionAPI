@@ -1,4 +1,6 @@
-﻿using SalesDatePredictionAPI.Modules.Orders.Domain.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
+using SalesDatePredictionAPI.Helpers;
+using SalesDatePredictionAPI.Modules.Orders.Domain.Interfaces;
 using SalesDatePredictionAPI.Modules.Orders.DTO;
 using SalesDatePredictionAPI.Modules.Orders.Services.Interfaces;
 
@@ -6,6 +8,7 @@ namespace SalesDatePredictionAPI.Modules.Orders.Services
 {
     public class OrdersServices : IOrdersServices
     {
+        private readonly JsonResponse _jsonResponse = JsonResponse.Instance;
         private readonly IOrdersDomain _ordersDomain;
 
         public OrdersServices(IOrdersDomain ordersDomain)
@@ -13,37 +16,40 @@ namespace SalesDatePredictionAPI.Modules.Orders.Services
             _ordersDomain = ordersDomain;
         }
 
-        public IEnumerable<SalesDatePredictionDTO> getSalesDatePredictions()
+        public ActionResult<IEnumerable<SalesDatePredictionDTO>> getSalesDatePredictions(OrderFiltersDTO filters)
         {
             try
             {
-                IEnumerable<SalesDatePredictionDTO> salesDatePredictions = _ordersDomain.getSalesDatePredictions();
+                IEnumerable<SalesDatePredictionDTO> salesDatePredictions = _ordersDomain.getSalesDatePredictions(filters);
 
-                if (salesDatePredictions is null || !salesDatePredictions.Any())
-                    return null;
+                if (salesDatePredictions is null)
+                    return _jsonResponse.badResponse<IEnumerable<SalesDatePredictionDTO>>();
 
-                return salesDatePredictions;
+                if (!salesDatePredictions.Any())
+                    return _jsonResponse.successResponse(salesDatePredictions, "No se obtuvo resultados");
+
+                return _jsonResponse.successResponse(salesDatePredictions);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return null;
+                return _jsonResponse.errorResponse<IEnumerable<SalesDatePredictionDTO>>(e.Message);
             }
         }
 
-        public bool addNewOrder(NewOrderDTO orderData)
+        public ActionResult<bool> addNewOrder(NewOrderDTO orderData)
         {
             try
             {
                bool isCorrectResponse = _ordersDomain.addNewOrder(orderData);
 
                 if (!isCorrectResponse)
-                    return false;
+                    return _jsonResponse.badResponse<bool>("No se registró la orden correctamente");
 
-                return true;
+                return _jsonResponse.successResponse(true, "Se registró la orden satisfactoriamente");
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
+                return _jsonResponse.errorResponse<bool>(e.Message);
             }
         }
     }

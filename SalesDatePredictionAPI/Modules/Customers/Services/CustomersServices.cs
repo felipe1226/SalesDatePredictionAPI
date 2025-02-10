@@ -22,8 +22,11 @@ namespace SalesDatePredictionAPI.Modules.Customers.Services
 			{
                 IEnumerable<OrderDTO> orders = _customersDomain.getOrders(customerId);
 
-                if (orders is null || !orders.Any())
+                if (orders is null)
                     return _jsonResponse.badResponse<IEnumerable<OrderDTO>>();
+
+                if (!orders.Any())
+                    return _jsonResponse.successResponse(orders, "No se obtuvo resultados");
 
                 return _jsonResponse.successResponse(orders);
             }

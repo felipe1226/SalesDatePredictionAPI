@@ -21,6 +21,5 @@ namespace SalesDatePredictionAPI.Modules.Customer.Controller
         {
             return _customersServices.getOrders(customerId);
         }
-
     }
 }

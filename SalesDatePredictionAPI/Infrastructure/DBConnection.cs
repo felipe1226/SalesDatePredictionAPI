@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace SalesDatePredictionAPI.Helpers
+namespace SalesDatePredictionAPI.Infrastructure
 {
     public class DBConnection : ControllerBase
     {

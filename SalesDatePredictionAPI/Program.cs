@@ -1,7 +1,13 @@
-using SalesDatePredictionAPI.DI;
-using SalesDatePredictionAPI.Helpers;
+using SalesDatePredictionAPI.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options => options.AddPolicy(
+    "AllowWebApp",
+    builder => builder.AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod())
+);
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
@@ -26,6 +32,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors("AllowWebApp");
 
 app.MapControllers();
 

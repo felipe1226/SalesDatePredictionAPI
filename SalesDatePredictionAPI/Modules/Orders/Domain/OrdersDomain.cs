@@ -1,5 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
-using SalesDatePredictionAPI.Helpers;
+using SalesDatePredictionAPI.Infrastructure;
 using SalesDatePredictionAPI.Modules.Orders.Domain.Interfaces;
 using SalesDatePredictionAPI.Modules.Orders.DTO;
 using System.Data;
@@ -10,7 +10,7 @@ namespace SalesDatePredictionAPI.Modules.Orders.Domain
     {
         private readonly DBConnection _dbConnection = DBConnection.Instance;
 
-        public IEnumerable<SalesDatePredictionDTO> getSalesDatePredictions()
+        public IEnumerable<SalesDatePredictionDTO> getSalesDatePredictions(OrderFiltersDTO filters)
         {
             try
             {
@@ -19,9 +19,14 @@ namespace SalesDatePredictionAPI.Modules.Orders.Domain
                     SqlCommand command = new()
                     {
                         Connection = connection,
-                        CommandText = "Sales.PA_SalesDatePredictions",
+                        CommandText = "Sales.PA_SalesDatePrediction",
                         CommandType = CommandType.StoredProcedure
                     };
+
+                    command.Parameters.AddRange(new SqlParameter[]
+                    {
+                        new SqlParameter("@CustomerName", SqlDbType.NVarChar, 40) { Value = filters.customerName }
+                    });
 
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -33,9 +38,10 @@ namespace SalesDatePredictionAPI.Modules.Orders.Domain
                             {
                                 salesDatePredictions.Add(new SalesDatePredictionDTO
                                 {
-                                    CustomerName = reader[0].ToString(),
-                                    LastOrderDate = DateTime.Parse(reader[1].ToString()),
-                                    NextPredictOrder = DateTime.Parse(reader[2].ToString())
+                                    customerId = Convert.ToInt32(reader["CustomerId"].ToString()),
+                                    customerName = reader["CustomerName"].ToString(),
+                                    lastOrderDate = DateTime.Parse(reader["LastOrderDate"].ToString()).ToString("MM/dd/yyyy"),
+                                    nextPredictedOrder = DateTime.Parse(reader["NextPredictedOrder"].ToString()).ToString("MM/dd/yyyy")
                                 });
                             }
                         }
@@ -45,7 +51,7 @@ namespace SalesDatePredictionAPI.Modules.Orders.Domain
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return null;
             }
@@ -66,21 +72,21 @@ namespace SalesDatePredictionAPI.Modules.Orders.Domain
 
                     command.Parameters.AddRange(new SqlParameter[]
                     {
-                    new SqlParameter("@CustomerId", SqlDbType.Int) { Value = orderData.CustomerId },
-                    new SqlParameter("@EmpId", SqlDbType.Int) { Value = orderData.EmpId },
-                    new SqlParameter("@ShipperId", SqlDbType.Int) { Value = orderData.ShipperId},
-                    new SqlParameter("@ShipName", SqlDbType.NVarChar, 40) { Value = orderData.ShipName },
-                    new SqlParameter("@ShipAddress", SqlDbType.NVarChar, 60) { Value = orderData.ShipAddress },
-                    new SqlParameter("@ShipCity", SqlDbType.NVarChar, 15) { Value = orderData.ShipCity },
-                    new SqlParameter("@OrderDate", SqlDbType.DateTime) { Value = orderData.OrderDate },
-                    new SqlParameter("@RequiredDate", SqlDbType.DateTime) { Value = orderData.RequiredDate },
-                    new SqlParameter("@ShippedDate", SqlDbType.DateTime) { Value = orderData.ShippedDate },
-                    new SqlParameter("@Freight", SqlDbType.Decimal) { Value = orderData.Freight },
-                    new SqlParameter("@ShipCountry", SqlDbType.NVarChar, 15) { Value = orderData.ShipCountry },
-                    new SqlParameter("@ProductId", SqlDbType.Int) { Value = orderData.ProductId },
-                    new SqlParameter("@UnitPrice", SqlDbType.Decimal) { Value = orderData.UnitPrice },
-                    new SqlParameter("@Qty", SqlDbType.Int) { Value = orderData.Qty },
-                    new SqlParameter("@Discount", SqlDbType.Decimal) { Value = orderData.Discount }
+                        new SqlParameter("@CustomerId", SqlDbType.Int) { Value = orderData.customerId },
+                        new SqlParameter("@EmpId", SqlDbType.Int) { Value = orderData.empId },
+                        new SqlParameter("@ShipperId", SqlDbType.Int) { Value = orderData.shipperId},
+                        new SqlParameter("@ShipName", SqlDbType.NVarChar, 40) { Value = orderData.shipName },
+                        new SqlParameter("@ShipAddress", SqlDbType.NVarChar, 60) { Value = orderData.shipAddress },
+                        new SqlParameter("@ShipCity", SqlDbType.NVarChar, 15) { Value = orderData.shipCity },
+                        new SqlParameter("@OrderDate", SqlDbType.DateTime) { Value = orderData.orderDate },
+                        new SqlParameter("@RequiredDate", SqlDbType.DateTime) { Value = orderData.requiredDate },
+                        new SqlParameter("@ShippedDate", SqlDbType.DateTime) { Value = orderData.shippedDate },
+                        new SqlParameter("@Freight", SqlDbType.Decimal) { Value = orderData.freight },
+                        new SqlParameter("@ShipCountry", SqlDbType.NVarChar, 15) { Value = orderData.shipCountry },
+                        new SqlParameter("@ProductId", SqlDbType.Int) { Value = orderData.productId },
+                        new SqlParameter("@UnitPrice", SqlDbType.Decimal) { Value = orderData.unitPrice },
+                        new SqlParameter("@Qty", SqlDbType.Int) { Value = orderData.qty },
+                        new SqlParameter("@Discount", SqlDbType.Decimal) { Value = orderData.discount }
                     });
 
                     connection.Open();

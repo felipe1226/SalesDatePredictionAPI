@@ -2,7 +2,7 @@
 {
     public class ShipperDTO
     {
-        public int ShipperID { get; set; }
-        public string CompanyName { get; set; }
+        public int shipperId { get; set; }
+        public string companyName { get; set; }
     }
 }

@@ -15,19 +15,18 @@ namespace SalesDatePredictionAPI.Modules.Order.Controller
             _ordersServices = ordersServices;
         }
 
-        [HttpGet]
-        [Route("sales-date-predictions")]
-        public async Task<IEnumerable<SalesDatePredictionDTO>> getSalesDatePredictions()
+        [HttpPost]
+        [Route("sales-date-prediction")]
+        public async Task<ActionResult<IEnumerable<SalesDatePredictionDTO>>> getSalesDatePredictions(OrderFiltersDTO filters)
         {
-            return _ordersServices.getSalesDatePredictions();
+            return _ordersServices.getSalesDatePredictions(filters);
         }
 
         [HttpPost]
         [Route("add-new-order")]
-        public async Task<bool> addNewOrder(NewOrderDTO orderData)
+        public async Task<ActionResult<bool>> addNewOrder(NewOrderDTO orderData)
         {
             return _ordersServices.addNewOrder(orderData);
         }
-
     }
 }

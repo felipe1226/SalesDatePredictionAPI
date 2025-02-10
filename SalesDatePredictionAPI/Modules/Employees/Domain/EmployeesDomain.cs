@@ -1,5 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
-using SalesDatePredictionAPI.Helpers;
+using SalesDatePredictionAPI.Infrastructure;
 using SalesDatePredictionAPI.Modules.Employees.Domain.Interfaces;
 using SalesDatePredictionAPI.Modules.Employees.DTO;
 using System.Data;
@@ -12,36 +12,44 @@ namespace SalesDatePredictionAPI.Modules.Employees.Domain
 
         public IEnumerable<EmployeeDTO> getAllEmployees()
         {
-            using (SqlConnection connection = new(_dbConnection.getConnectionString()))
+            try
             {
-                SqlCommand command = new()
+                using (SqlConnection connection = new(_dbConnection.getConnectionString()))
                 {
-                    Connection = connection,
-                    CommandText = "HR.PA_GetAllEmployees",
-                    CommandType = CommandType.StoredProcedure
-                };
-
-                connection.Open();
-
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    List<EmployeeDTO> employees = new();
-                    if (reader.HasRows)
+                    SqlCommand command = new()
                     {
-                        while (reader.Read())
-                        {
-                            employees.Add(new EmployeeDTO
-                            {
-                                EmpID = Convert.ToInt32(reader[0].ToString()),
-                                FullName = reader[1].ToString()
-                            });
-                        }
-                    }
-                    reader.Close();
+                        Connection = connection,
+                        CommandText = "HR.PA_GetEmployees",
+                        CommandType = CommandType.StoredProcedure
+                    };
 
-                    return employees.ToList();
+                    connection.Open();
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        List<EmployeeDTO> employees = new();
+                        if (reader.HasRows)
+                        {
+                            while (reader.Read())
+                            {
+                                employees.Add(new EmployeeDTO
+                                {
+                                    empId = Convert.ToInt32(reader["empid"].ToString()),
+                                    fullName = reader["fullname"].ToString()
+                                });
+                            }
+                        }
+                        reader.Close();
+
+                        return employees.ToList();
+                    }
                 }
             }
+            catch (Exception)
+            {
+                return null;
+            }
         }
+
     }
 }

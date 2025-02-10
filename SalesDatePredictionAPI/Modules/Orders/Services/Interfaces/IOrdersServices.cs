@@ -1,11 +1,12 @@
-﻿using SalesDatePredictionAPI.Modules.Orders.DTO;
+﻿using Microsoft.AspNetCore.Mvc;
+using SalesDatePredictionAPI.Modules.Orders.DTO;
 
 namespace SalesDatePredictionAPI.Modules.Orders.Services.Interfaces
 {
     public interface IOrdersServices
     {
-        IEnumerable<SalesDatePredictionDTO> getSalesDatePredictions();
+        ActionResult<IEnumerable<SalesDatePredictionDTO>> getSalesDatePredictions(OrderFiltersDTO filters);
 
-        bool addNewOrder(NewOrderDTO orderData);
+        ActionResult<bool> addNewOrder(NewOrderDTO orderData);
     }
 }

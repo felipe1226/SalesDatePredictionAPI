@@ -1,6 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
-using SalesDatePredictionAPI.Helpers;
-using SalesDatePredictionAPI.Modules.Employees.DTO;
+using SalesDatePredictionAPI.Infrastructure;
 using SalesDatePredictionAPI.Modules.Products.Domain.Interfaces;
 using SalesDatePredictionAPI.Modules.Products.DTO;
 using System.Data;
@@ -13,35 +12,42 @@ namespace SalesDatePredictionAPI.Modules.Products.Domain
 
         public IEnumerable<ProductDTO> getAllProducts()
         {
-            using (SqlConnection connection = new(_dbConnection.getConnectionString()))
+            try
             {
-                SqlCommand command = new()
+                using (SqlConnection connection = new(_dbConnection.getConnectionString()))
                 {
-                    Connection = connection,
-                    CommandText = "Production.PA_GetAllProducts",
-                    CommandType = CommandType.StoredProcedure
-                };
-
-                connection.Open();
-
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    List<ProductDTO> products = new();
-                    if (reader.HasRows)
+                    SqlCommand command = new()
                     {
-                        while (reader.Read())
-                        {
-                            products.Add(new ProductDTO
-                            {
-                                ProductID = Convert.ToInt32(reader[0].ToString()),
-                                ProductName = reader[1].ToString()
-                            });
-                        }
-                    }
-                    reader.Close();
+                        Connection = connection,
+                        CommandText = "Production.PA_GetProducts",
+                        CommandType = CommandType.StoredProcedure
+                    };
 
-                    return products.ToList();
+                    connection.Open();
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        List<ProductDTO> products = new();
+                        if (reader.HasRows)
+                        {
+                            while (reader.Read())
+                            {
+                                products.Add(new ProductDTO
+                                {
+                                    productId = Convert.ToInt32(reader["productid"].ToString()),
+                                    productName = reader["productname"].ToString()
+                                });
+                            }
+                        }
+                        reader.Close();
+
+                        return products.ToList();
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
     }

@@ -1,9 +1,10 @@
-﻿using SalesDatePredictionAPI.Modules.Employees.DTO;
+﻿using Microsoft.AspNetCore.Mvc;
+using SalesDatePredictionAPI.Modules.Employees.DTO;
 
 namespace SalesDatePredictionAPI.Modules.Employees.Services.Interfaces
 {
     public interface IEmployeesServices
     {
-        IEnumerable<EmployeeDTO> getAllEmployees();
+        ActionResult<IEnumerable<EmployeeDTO>> getAllEmployees();
     }
 }

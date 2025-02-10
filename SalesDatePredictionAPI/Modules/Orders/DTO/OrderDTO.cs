@@ -2,11 +2,11 @@
 {
     public class OrderDTO
     {
-        public int OrderID { get; set; }
-        public DateTime RequiredDate { get; set; }
-        public DateTime ShippedDate { get; set; }
-        public string ShipName { get; set; }
-        public string ShipAddress { get; set; }
-        public string ShipCit { get; set; }
+        public int orderId { get; set; }
+        public string requiredDate { get; set; }
+        public string? shippedDate { get; set; }
+        public string shipName { get; set; }
+        public string shipAddress { get; set; }
+        public string shipCity { get; set; }
     }
 }

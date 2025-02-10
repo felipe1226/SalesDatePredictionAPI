@@ -17,7 +17,7 @@ namespace SalesDatePredictionAPI.Modules.Products.Controller
 
         [HttpGet]
         [Route("list")]
-        public async Task<IEnumerable<ProductDTO>> getAllProducts()
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> getAllProducts()
         {
             return _productsServices.getAllProducts();
         }

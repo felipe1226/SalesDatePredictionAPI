@@ -1,5 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
-using SalesDatePredictionAPI.Helpers;
+using SalesDatePredictionAPI.Infrastructure;
 using SalesDatePredictionAPI.Modules.Shippers.Domain.Interfaces;
 using SalesDatePredictionAPI.Modules.Shippers.DTO;
 using System.Data;
@@ -12,35 +12,42 @@ namespace SalesDatePredictionAPI.Modules.Shippers.Domain
 
         public IEnumerable<ShipperDTO> getAllShippers()
         {
-            using (SqlConnection connection = new(_dbConnection.getConnectionString()))
+            try
             {
-                SqlCommand command = new()
+                using (SqlConnection connection = new(_dbConnection.getConnectionString()))
                 {
-                    Connection = connection,
-                    CommandText = "Sales.PA_GetAllShippers",
-                    CommandType = CommandType.StoredProcedure
-                };
-
-                connection.Open();
-
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    List<ShipperDTO> shippers = new();
-                    if (reader.HasRows)
+                    SqlCommand command = new()
                     {
-                        while (reader.Read())
-                        {
-                            shippers.Add(new ShipperDTO
-                            {
-                                ShipperID = Convert.ToInt32(reader[0].ToString()),
-                                CompanyName = reader[1].ToString()
-                            });
-                        }
-                    }
-                    reader.Close();
+                        Connection = connection,
+                        CommandText = "Sales.PA_GetShippers",
+                        CommandType = CommandType.StoredProcedure
+                    };
 
-                    return shippers.ToList();
+                    connection.Open();
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        List<ShipperDTO> shippers = new();
+                        if (reader.HasRows)
+                        {
+                            while (reader.Read())
+                            {
+                                shippers.Add(new ShipperDTO
+                                {
+                                    shipperId = Convert.ToInt32(reader["shipperid"].ToString()),
+                                    companyName = reader["companyname"].ToString()
+                                });
+                            }
+                        }
+                        reader.Close();
+
+                        return shippers.ToList();
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
 

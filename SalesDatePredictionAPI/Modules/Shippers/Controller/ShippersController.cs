@@ -17,10 +17,9 @@ namespace SalesDatePredictionAPI.Modules.Shipper.Controller
 
         [HttpGet]
         [Route("list")]
-        public async Task<IEnumerable<ShipperDTO>> getAllShippers()
+        public async Task<ActionResult<IEnumerable<ShipperDTO>>> getAllShippers()
         {
             return _shippersServices.getAllShippers();
         }
-
     }
 }

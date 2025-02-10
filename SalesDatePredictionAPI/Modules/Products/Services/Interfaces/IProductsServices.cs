@@ -1,9 +1,10 @@
-﻿using SalesDatePredictionAPI.Modules.Products.DTO;
+﻿using Microsoft.AspNetCore.Mvc;
+using SalesDatePredictionAPI.Modules.Products.DTO;
 
 namespace SalesDatePredictionAPI.Modules.Products.Services.Interfaces
 {
     public interface IProductsServices
     {
-        IEnumerable<ProductDTO> getAllProducts();
+        ActionResult<IEnumerable<ProductDTO>> getAllProducts();
     }
 }

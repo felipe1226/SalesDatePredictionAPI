@@ -17,7 +17,7 @@ namespace SalesDatePredictionAPI.Modules.Employee.Controller
 
         [HttpGet]
         [Route("list")]
-        public async Task<IEnumerable<EmployeeDTO>> getAllEmployees()
+        public async Task<ActionResult<IEnumerable<EmployeeDTO>>> getAllEmployees()
         {
             return _employeesServices.getAllEmployees();
         }

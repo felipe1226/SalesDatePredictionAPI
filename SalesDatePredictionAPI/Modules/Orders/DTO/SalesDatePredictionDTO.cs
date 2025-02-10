@@ -2,8 +2,9 @@
 {
     public class SalesDatePredictionDTO
     {
-        public string CustomerName { get; set; }
-        public DateTime LastOrderDate { get; set; }
-        public DateTime NextPredictOrder { get; set; }
+        public int customerId { get; set; }
+        public string customerName { get; set; }
+        public string lastOrderDate { get; set; }
+        public string nextPredictedOrder { get; set; }
     }
 }

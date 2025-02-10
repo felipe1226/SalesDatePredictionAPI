@@ -1,5 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
-using SalesDatePredictionAPI.Helpers;
+using SalesDatePredictionAPI.Infrastructure;
 using SalesDatePredictionAPI.Modules.Customers.Domain.Interfaces;
 using SalesDatePredictionAPI.Modules.Orders.DTO;
 using System.Data;
@@ -19,11 +19,11 @@ namespace SalesDatePredictionAPI.Modules.Customers.Domain
                     SqlCommand command = new()
                     {
                         Connection = connection,
-                        CommandText = "Sales.PA_GetCustomerOrders",
+                        CommandText = "Sales.PA_GetClientOrders",
                         CommandType = CommandType.StoredProcedure
                     };
 
-                    command.Parameters.Add(new SqlParameter("@customerId", SqlDbType.Int) { Value = customerId });
+                    command.Parameters.Add(new SqlParameter("@CustomerId", SqlDbType.Int) { Value = customerId });
 
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -35,12 +35,14 @@ namespace SalesDatePredictionAPI.Modules.Customers.Domain
                             {
                                 orders.Add(new OrderDTO
                                 {
-                                    OrderID = Convert.ToInt32(reader[0].ToString()),
-                                    RequiredDate = DateTime.Parse(reader[1].ToString()),
-                                    ShippedDate = DateTime.Parse(reader[2].ToString()),
-                                    ShipName = reader[3].ToString(),
-                                    ShipAddress = reader[4].ToString(),
-                                    ShipCit = reader[5].ToString()
+                                    orderId = Convert.ToInt32(reader["orderid"].ToString()),
+                                    requiredDate = DateTime.Parse(reader["requireddate"].ToString()).ToString("MM/dd/yyyy, hh:mm:ss tt"),
+                                    shippedDate = reader["shippeddate"] is not null && reader["shippeddate"].ToString() != string.Empty 
+                                        ? DateTime.Parse(reader["shippeddate"].ToString()).ToString("MM/dd/yyyy, hh:mm:ss tt")
+                                        : null,
+                                    shipName = reader["shipname"].ToString(),
+                                    shipAddress = reader["shipaddress"].ToString(),
+                                    shipCity = reader["shipcity"].ToString()
                                 });
                             }
                         }
@@ -55,5 +57,6 @@ namespace SalesDatePredictionAPI.Modules.Customers.Domain
                 return null;
             }
         }
+
     }
 }

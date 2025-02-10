@@ -19,7 +19,7 @@ using SalesDatePredictionAPI.Modules.Shippers.Domain.Interfaces;
 using SalesDatePredictionAPI.Modules.Shippers.Services;
 using SalesDatePredictionAPI.Modules.Shippers.Services.Interfaces;
 
-namespace SalesDatePredictionAPI.DI
+namespace SalesDatePredictionAPI.Infrastructure
 {
     public static class DependencyInjection
     {
