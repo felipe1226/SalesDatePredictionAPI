@@ -10,7 +10,7 @@ Se anexa al repositorio el archivo Procedimientosalmacenados.zip, el cual contie
 - .NET 7.0
 - ADO.NET
 - SQL Server  
-- Swagger (para documentación)  
+- Swagger
 
 ## 🔧 Instalación y Configuración  
 
