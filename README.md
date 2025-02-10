@@ -4,7 +4,7 @@ Esta API en .NET proporciona los servicios para el proyecto Sales Date Predictio
 
 Repositorio Web App: https://github.com/felipe1226/SalesDatePredictionApp.git
 
-Se anexa al repositorio el archivo Procedimientosalmacenados.zip, el cual contiene los scripts con las sentencias requeridas por los servicios del API.
+Se anexa al repositorio el archivo Procedimientosalmacenados.zip, el cual contiene los scripts con las sentencias requeridas por los servicios del API. Ejecutar los scripts para la base de datos StoreSample.
 
 ## 🚀 Tecnologías Utilizadas  
 - .NET 7.0
